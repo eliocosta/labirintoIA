@@ -1,0 +1,46 @@
+<html>
+<head>
+	<title>Labirinto</title>
+<link href="style.css" media="all" rel="stylesheet" />
+<!-- <script type="text/javascript" src="matrix.js"></script>
+ -->
+<script type="text/javascript">
+
+var Tree = [];
+
+function Node(y,x,peso,parent) {
+
+    this.y = y;
+    this.x = x;
+    this.peso = peso;
+    if(parent){
+      this.peso = peso + parent.peso;
+    }
+    this.parent = parent;
+}
+
+function addNode(data) {
+  Tree.push(data);
+}
+
+node1 = new Node(36,4,0,null);
+node2 = new Node(35,4,1,node1);
+node3 = new Node(37,4,2,node2);
+node4 = new Node(36,3,5,node3);
+
+addNode(node1);
+addNode(node2);
+addNode(node3);
+addNode(node4);
+
+console.log(Tree);
+
+</script>
+</head>
+<body>
+	<div id="matriz"></div>
+	<center><button onClick=custoUniforme()>Custo Uniforme</button></center>
+	<center>Custo acumulado: <span id="custoAcumulado"></span></center>
+
+</body>
+</html>
