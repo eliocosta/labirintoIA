@@ -1,0 +1,307 @@
+<html>
+<head>
+	<title>Trabalho 1</title>
+<style type="text/css">
+body{
+	margin: 0;
+	padding: 0;
+}
+*{
+	font-family: Arial;
+	font-size: 14px;
+	font-size: 10px
+}
+#matriz{
+	width: 700px;
+	width: 1400px;
+	margin:5px auto;
+}
+#matriz div{
+	width: 15px;
+	width: 32px;
+	height: 15px;
+	border: 1px solid black;
+	text-align: center;
+	float: left;
+}
+.visitou{
+	background: #efcac4;
+}
+.pontoAtual{
+	background-color: green;
+}
+.cinzaEscuro{
+	background-color: #a0a29d
+}
+.cinzaClaro{
+	background-color: #d4d5d7
+}
+.laranja{
+	background-color: #f9bf04
+}
+.verde{
+	background-color: #01ab54
+}
+.amarelo{
+	background-color: #f9f90b
+}
+
+.clear{
+	clear: left;
+	display: inline-block;
+}
+</style>
+<script type="text/javascript">
+
+var matriz = [
+['D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D'],
+['D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D'],
+['D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D'],
+['D','D','D','.','.','.','.','.','.','.','.','.','D','D','D','D','.','.','G','.','G','.','.','.','.','D','D','D','D','.','G','.','.','.','.','.','.','.','D','D','D'],
+['D','D','D','.','G','.','G','G','G','G','G','.','D','D','D','D','.','.','G','.','G','.','G','G','.','D','D','D','D','.','G','.','G','.','G','.','.','.','D','D','D'],
+['D','D','D','.','G','.','.','G','.','.','.','.','D','D','D','D','.','.','.','.','.','.','.','G','.','D','D','D','D','.','G','.','G','.','G','G','G','.','D','D','D'],
+['D','D','D','.','G','.','D','D','D','.','.','.','D','D','D','D','.','.','.','D','D','D','.','.','.','D','D','D','D','.','.','.','D','D','D','.','G','.','D','D','D'],
+['D','D','D','.','.','.','D','D','D','G','G','.','D','D','D','D','G','G','.','D','D','D','.','G','G','D','D','D','D','G','G','.','D','D','D','.','G','.','D','D','D'],
+['D','D','D','.','G','G','D','D','D','.','.','.','D','D','D','D','.','.','D','D','D','D','.','.','D','D','D','D','D','.','.','.','D','D','D','.','.','.','D','D','D'],
+['D','D','D','.','.','.','D','D','D','.','G','.','D','D','D','D','D','C','D','D','D','D','D','C','D','D','D','D','D','.','G','G','D','D','D','.','G','G','D','D','D'],
+['D','D','D','.','G','G','D','D','D','.','G','.','D','D','D','D','D','.','.','D','D','D','D','.','.','D','D','D','D','.','.','.','D','D','D','.','.','.','D','D','D'],
+['D','D','D','.','.','.','D','D','D','.','G','G','D','D','D','D','.','G','.','D','D','D','.','.','.','D','D','D','D','.','.','.','D','D','D','.','.','.','D','D','D'],
+['D','D','D','D','.','.','D','D','D','.','.','.','D','D','D','D','G','G','.','D','D','D','.','G','.','D','D','D','D','G','G','.','D','D','D','G','G','.','D','D','D'],
+['D','D','D','D','C','D','D','D','D','D','.','.','D','D','D','D','.','.','.','D','D','D','.','G','.','D','D','D','D','.','.','.','D','D','D','.','.','.','D','D','D'],
+['D','D','D','.','.','D','D','D','D','D','C','D','D','D','D','D','.','.','.','D','D','D','.','.','.','D','D','D','D','.','G','.','D','D','D','.','.','.','D','D','D'],
+['D','D','D','.','.','.','D','D','D','.','.','D','D','D','D','D','.','G','G','D','D','D','G','G','.','D','D','D','D','.','G','.','D','D','D','.','G','.','D','D','D'],
+['D','D','D','.','G','G','D','D','D','.','.','.','D','D','D','D','.','.','.','D','D','D','.','G','.','D','D','D','D','.','.','.','D','D','D','G','G','.','D','D','D'],
+['D','D','D','.','.','.','D','D','D','.','G','G','D','D','D','D','.','.','.','D','D','D','.','G','G','D','D','D','D','D','C','D','D','D','D','.','G','.','D','D','D'],
+['D','D','D','G','.','G','D','D','D','.','.','.','D','D','D','D','G','G','.','D','D','D','.','.','.','D','D','D','D','.','.','.','D','D','D','.','.','.','D','D','D'],
+['D','D','D','G','.','G','D','D','D','.','.','.','D','D','D','D','.','.','.','D','D','D','.','G','G','D','D','D','D','.','.','.','D','D','D','D','C','D','D','D','D'],
+['D','D','D','.','.','.','D','D','D','G','G','.','D','D','D','D','.','G','.','D','D','D','.','G','.','D','D','D','D','.','G','G','D','D','D','.','.','.','D','D','D'],
+['D','D','D','.','G','.','D','D','D','G','G','.','D','D','D','D','.','.','G','D','D','D','G','G','.','D','D','D','D','.','G','.','D','D','D','.','.','.','D','D','D'],
+['D','D','D','.','G','.','D','D','D','.','.','.','D','D','D','D','.','.','.','D','D','D','.','G','.','D','D','D','D','.','G','.','D','D','D','G','G','.','D','D','D'],
+['D','D','D','.','G','.','D','D','D','.','.','.','D','D','D','D','.','.','.','D','D','D','.','.','.','D','D','D','D','.','.','.','D','D','D','.','G','.','D','D','D'],
+['D','D','D','.','.','.','D','D','D','G','G','.','D','D','D','D','G','G','.','D','D','D','.','G','G','D','D','D','D','G','G','.','D','D','D','.','G','.','D','D','D'],
+['D','D','D','.','G','G','D','D','D','.','.','.','D','D','D','D','.','.','.','D','D','D','.','.','.','D','D','D','D','.','.','.','D','D','D','.','.','.','D','D','D'],
+['D','D','D','.','.','.','D','D','D','.','G','.','D','D','D','D','D','C','D','D','D','D','D','C','D','D','D','D','D','.','G','G','D','D','D','.','G','G','D','D','D'],
+['D','D','D','.','G','G','D','D','D','.','G','.','D','D','D','D','.','.','.','D','D','D','.','.','.','D','D','D','D','.','.','.','D','D','D','.','.','.','D','D','D'],
+['D','D','D','.','.','.','D','D','D','.','G','G','D','D','D','D','.','G','.','D','D','D','.','.','.','D','D','D','D','.','.','.','D','D','D','.','.','.','D','D','D'],
+['D','D','D','G','G','G','D','D','D','D','.','.','D','D','D','D','G','G','.','D','D','D','.','G','.','D','D','D','D','G','G','.','D','D','D','G','G','.','D','D','D'],
+['D','D','D','.','.','.','D','D','D','D','C','D','D','D','D','D','.','.','.','D','D','D','.','.','.','D','D','D','D','.','G','.','D','D','D','.','.','.','D','D','D'],
+['D','D','D','.','.','.','D','D','D','.','.','.','D','D','D','D','.','G','G','D','D','D','G','G','.','D','D','D','D','.','G','.','D','D','D','.','G','.','D','D','D'],
+['D','D','D','.','G','G','D','D','D','.','.','.','D','D','D','D','.','.','.','D','D','D','.','G','.','D','D','D','D','.','.','.','D','D','D','G','G','.','D','D','D'],
+['D','D','D','.','.','.','D','D','D','.','G','G','D','D','D','D','.','.','.','D','D','D','.','G','G','D','D','D','D','D','C','D','D','D','D','.','G','.','D','D','D'],
+['D','D','D','G','.','G','D','D','D','.','.','.','D','D','D','D','G','G','.','D','D','D','.','.','.','D','D','D','D','.','.','.','D','D','D','.','.','G','D','D','D'],
+['D','D','D','.','.','.','D','D','D','G','G','.','.','.','.','.','.','.','.','D','D','D','.','.','G','.','G','.','G','.','.','.','D','D','D','G','.','.','D','D','D'],
+['D','D','D','.','I','.','D','D','D','.','G','.','G','.','.','.','G','G','.','D','D','D','.','.','G','.','G','.','G','G','G','.','D','D','D','.','F','.','D','D','D'],
+['D','D','D','.','.','.','D','D','D','.','.','.','.','.','.','.','.','.','.','D','D','D','.','.','.','.','.','.','.','.','.','.','D','D','D','.','.','.','D','D','D'],
+['D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D'],
+['D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D'],
+['D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D','D']
+];
+
+var matrizVisitados = [];
+
+function setClass(yVal,xVal,classe){
+	document.getElementById('y'+yVal+'x'+xVal).className = classe;
+}
+
+function checkPeso(y,x){
+	var pesos = [{
+				nome: 'D',
+				peso: 300,
+				//incremento: 0.9
+			},
+			{
+				nome: '.',
+				peso: 1
+			},
+			{
+				nome: 'G',
+				peso: 5
+			},
+			{
+				nome: 'C',
+				peso: 60,
+				//peso: [60,80,100,120,140,160,180,200,220,250],
+			}		
+		];
+
+	ponto = matriz[y][x];
+	for (var i = pesos.length - 1; i >= 0; i--) {
+		if(pesos[i].nome == ponto){
+			setClass(y,x,'visitou');
+			return pesos[i].peso;
+		}
+	};
+}
+
+var custoAcumulado=0;
+function addCusto(yVal,xVal){
+	custoAcumulado += checkPeso(yVal,xVal);
+	document.getElementById("custoAcumulado").innerHTML=custoAcumulado;
+}
+
+function getVizinhos(y,x) {
+	var vizinhos = [{
+						y: y-1,
+						x: x,
+						peso: checkPeso(y-1,x)
+					},
+					{
+						y: y+1,
+						x: x,
+						peso: checkPeso(y+1,x)
+					},
+					{
+						y: y,
+						x: x-1,
+						peso: checkPeso(y,x-1)
+					},
+					{
+						y: y,
+						x: x+1,
+						peso: checkPeso(y,x+1)
+					}];
+	return vizinhos;
+}
+
+
+// pra nao fazer uma busca pelo I, já defini o ponto de partida
+window.y = 36;
+window.x = 4;
+
+var coords = [];
+var busca = [];
+
+// Parametros: coordenadas de inicio
+function custoUniforme(coords){
+
+	if(!coords.length){
+		coords = getVizinhos(window.y,window.x);
+	}
+
+	var vizinhos = [];
+	for (var i = 0; i < coords.length; i++) {
+		vizinhos = getVizinhos(coords[i].y,coords[i].x);
+		coords.concat(vizinhos);
+	}
+	console.log(coords);
+}
+
+
+var mapMatriz = []; 
+// Parametros: coordenadas de inicio
+function custoUniforme_old(y, x){
+
+	// checa os arredores
+	var vizinhos = getVizinhos(y,x);
+	var vizinhosExternos = [];
+	for (var v1 = vizinhos.length - 1; v1 >= 0; v1--) {
+
+		// calcula o peso dos vizinhos primarios
+		mapMatriz.push({
+			y:vizinhos[v1].y,
+			x:vizinhos[v1].x,
+			peso: checkPeso(vizinhos[v1].y, vizinhos[v1].x)
+		});
+
+		vizinhosExternos = getVizinhos(vizinhos[v1].y,vizinhos[v1].x);
+
+		// remove os vizinhos ja visitados
+		if(mapMatriz.length > 0){
+			for (var m = 0; m < mapMatriz.length; m++) {
+				for (var v = 0; v < vizinhosExternos.length; v++) {
+
+					if(mapMatriz[m].x == vizinhosExternos[v].x && mapMatriz[m].y == vizinhosExternos[v].y){
+						vizinhosExternos.splice(v, 1);
+					}
+				}
+			}
+		}
+
+		// calcula o peso dos vizinhos externos
+		for (var v2 = 0; v2 < vizinhosExternos.length; v2++) {
+
+			// não adiciona o nó inicial
+			if(vizinhosExternos[v2].y != y || vizinhosExternos[v2].x != x){
+
+				mapMatriz.push({
+					y:vizinhosExternos[v2].y,
+					x:vizinhosExternos[v2].x,
+					peso: checkPeso(vizinhosExternos[v2].y, vizinhosExternos[v2].x)
+				});
+			}
+		};
+	}
+
+
+		// // vizinhos dos vizinhos
+		// mapMatriz.push({
+		// 	y:vizinhos[i].y,
+		// 	x:vizinhos[i].x,
+		// 	peso: checkPeso(vizinhos[i].y, vizinhos[i].x)
+		// });
+
+	var menorPeso = 0;
+
+
+	console.log('--------');
+	console.log(mapMatriz);
+
+
+	// setClass(nY,nX,'pontoAtual');
+	// addCusto(nY,nX);
+	
+	// matrizVisitados.push({x: nX, y: nY});
+	// console.log(matrizVisitados);
+
+	// window.x = nX;
+	// window.y = nY;
+	
+	//	return custoUniforme(nY, nX);
+
+}
+
+
+// custoUniforme(y,x);
+
+function mostraMatriz(){
+	var classe;
+	var html = '';
+	for (var y = 0; y < matriz.length; y++) {
+		for (var x = 0; x < matriz[y].length; x++) {
+
+			switch(matriz[y][x]){
+				case 'D': classe = 'cinzaEscuro';break;
+				case 'G': classe = 'cinzaClaro';break;
+				case 'C': classe = 'amarelo';break;
+				case 'I': classe = 'laranja';break;
+				case 'F': classe = 'verde';break;
+				default: classe = '';
+
+			}
+			// html += '<div id="y'+y+'x'+x+'" class="'+classe+'">' + matriz[y][x] + '</div>';
+			html += '<div id="y'+y+'x'+x+'" class="'+classe+'">' + matriz[y][x] + y + x + '</div>';
+		}
+		html += '<br class="clear">';
+	}
+	document.getElementById("matriz").innerHTML = html;
+}
+
+/*
+for (var y = matriz.length - 1; y >= 0; y--) {
+	for (var x = matriz[y].length - 1; x >= 0; x--) {
+		if(matriz[y][x] == 'I'){
+			console.log(matriz[y][x]);
+			console.log(y,x);
+		}
+	}
+};*/
+
+</script>
+</head>
+<body onLoad="mostraMatriz()">
+	<div id="matriz"></div>
+	<center><button onClick=custoUniforme(coords)>Custo Uniforme</button></center>
+	<center>Custo acumulado: <span id="custoAcumulado"></span></center>
+
+</body>
+</html>
