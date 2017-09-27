@@ -6,8 +6,6 @@
 
 <script type="text/javascript">
 
-var matrizVisitados = [];
-
 function setClass(yVal,xVal,classe){
 	document.getElementById('y'+yVal+'x'+xVal).className = classe;
 }
@@ -82,59 +80,74 @@ function getVizinhos(y,x) {
 	return vizinhos;
 }
 
+var Tree = [];
+var peso = 0;
+function Node(y,x,peso,parent) {
+
+    this.y = y;
+    this.x = x;
+    this.peso = peso;
+    if(parent){
+
+      this.peso = peso + parent.peso;
+    }
+    this.parent = parent;
+
+}
+
+function addNode(data) {
+  Tree.push(data);
+}
+
 // pra nao fazer uma busca pelo I, já defini o ponto de partida
 window.y = 36;
 window.x = 4;
 
-var nosVisitados = [];
-var coords = [];
 
-// Parametros: coordenadas de inicio
 function custoUniforme(){
 
-	if(!coords.length){
-		coords = [{
-			y: window.y,
-			x: window.x,
-			// peso: checkPeso(window.y,window.x)
-		}]
+	if(!Tree.length){
+		var node = new Node(window.y,window.x,0,null);
+		addNode(node);
 	}
-	console.log(coords);
-	var arvoreAux = [];
-	var vizinhos = [];
-	for (var i = 0; i < coords.length; i++) {
-		vizinhos = getVizinhos(coords[i].y,coords[i].x);
-		arvoreAux[i] = {arvore:vizinhos};
-		nosVisitados = coords;
+
+	var newNodes = [];
+	var t = 0;
+	if(Tree.length > 4){
+		t = 1;
 	}
-	coords[i] = {arvore:vizinhos};
-	coords = coords.concat(nosVisitados);
-	console.log(coords);
-	// console.log(nosVisitados);
+	while(t < Tree.length){
+		var vizinhos = getVizinhos(Tree[t].y,Tree[t].x);
+		var pesoVizinhos = 0;		
+		if(Tree.length > 4){
+			for (var v = 0; v < vizinhos.length; v++) {
+				pesoVizinhos = vizinhos[v].peso;
+				if(pesoVizinhos > 0 && pesoVizinhos > vizinhos[v].peso){
+					
+				}
+
+				// remove dos vizinhos o nó que for igual ao nó pai
+				if(vizinhos[v].y == Tree[t].parent.y && vizinhos[v].x == Tree[t].parent.x){
+					vizinhos.splice(v,1);
+				}
+			}
+		}
+		console.log(pesoVizinhos);
+
+		// adiciona os restante dos nós na árvore
+		for (var v = 0; v < vizinhos.length; v++) {
+			newNodes.push(new Node(vizinhos[v].y,vizinhos[v].x,vizinhos[v].peso,Tree[t]));
+		}
+		t++;
+	}
+
+	for (var i = 0; i < newNodes.length; i++) {
+		addNode(newNodes[i]);	
+	}
+	console.log(Tree);
+
 }
 
-function custoUniforme_bk(){
-
-	if(!coords.length){
-		coords = [{
-			y: window.y,
-			x: window.x,
-			peso: checkPeso(window.y,window.x)
-		}]
-	}
-	console.log(coords);
-
-	var vizinhos = [];
-	for (var i = 0; i < coords.length; i++) {
-		vizinhos = getVizinhos(coords[i].y,coords[i].x);
-		nosVisitados = nosVisitados.concat(vizinhos);
-	}
-	coords = coords.concat(nosVisitados);
-	console.log(coords);
-	// console.log(nosVisitados);
-}
-
-// custoUniforme(y,x);
 
 function mostraMatriz(){
 	var classe;
