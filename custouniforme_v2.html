@@ -70,7 +70,7 @@ function getVizinhos(y,x) {
 }
 
 var Tree = [];
-var peso = 0;
+
 function Node(y,x,parent) {
 
     this.y = y;
@@ -108,50 +108,23 @@ function custoUniforme(){
 		t = 1;
 	}
 
-	var arrayPesoVizinhos = [];
+	var vizinhos = getVizinhos(Tree[t].y,Tree[t].x);
 
-	while(t < Tree.length){
-		
-		var vizinhos = getVizinhos(Tree[t].y,Tree[t].x);
-
-		if(Tree.length > 4){
-			for (var v = 0; v < vizinhos.length; v++) {
-				
-				// remove dos vizinhos o nó que for igual ao nó pai
-				if(vizinhos[v].y == Tree[t].parent.y && vizinhos[v].x == Tree[t].parent.x){
-					vizinhos.splice(v,1);
-				}
-			}
-		}
-
-		// adiciona os restante dos nós na árvore
+	if(Tree.length > 4){
 		for (var v = 0; v < vizinhos.length; v++) {
-			newNodes.push(new Node(vizinhos[v].y,vizinhos[v].x,Tree[t]));
-		}
-
-
-		// if(t % 4 == 0){
-			// gera um array com os pesos
-			for (var n = 0; n < newNodes.length; n++) {
-				arrayPesoVizinhos.push(newNodes[n].peso);
-			}
-			// ordena este array
-			arrayPesoVizinhos.sort(sortNumbers);
 			
-			// remove dos nós quem tiver o peso maior que o primeiro elemento do array
-			for (var n2 = 0; n2 < newNodes.length; n2++) {
-				if(newNodes[n2].peso > arrayPesoVizinhos[0]){
-					newNodes.splice(n2,1);
-				}
+			// remove dos vizinhos o nó que for igual ao nó pai
+			if(vizinhos[v].y == Tree[t].parent.y && vizinhos[v].x == Tree[t].parent.x){
+				vizinhos.splice(v,1);
 			}
-		// }
-
-		
-		if(t % 4 == 0){
-			console.log(newNodes);
 		}
-		t++;
 	}
+
+	// adiciona os restante dos nós na árvore
+	for (var v = 0; v < vizinhos.length; v++) {
+		newNodes.push(new Node(vizinhos[v].y,vizinhos[v].x,Tree[t]));
+	}
+	
 
 	for (var x = 0; x < newNodes.length; x++) {
 		addNode(newNodes[x]);
