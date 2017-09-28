@@ -44,55 +44,47 @@ function checkPeso(y,x){
 	pontoValor = matriz[y][x];
 	for (var i = pesos.length - 1; i >= 0; i--) {
 		if(pesos[i].nome == pontoValor){
-			setClass(y,x,'visitou');
 			return pesos[i].peso;
 		}
 	};
 }
 
-var custoAcumulado=0;
-function addCusto(yVal,xVal){
-	custoAcumulado += checkPeso(yVal,xVal);
-	document.getElementById("custoAcumulado").innerHTML=custoAcumulado;
-}
-
 function getVizinhos(y,x) {
 	var vizinhos = [{
 						y: y-1,
-						x: x,
-						peso: checkPeso(y-1,x)
+						x: x
 					},
 					{
 						y: y+1,
-						x: x,
-						peso: checkPeso(y+1,x)
+						x: x
 					},
 					{
 						y: y,
-						x: x-1,
-						peso: checkPeso(y,x-1)
+						x: x-1
 					},
 					{
 						y: y,
-						x: x+1,
-						peso: checkPeso(y,x+1)
+						x: x+1
 					}];
 	return vizinhos;
 }
 
 var Tree = [];
 var peso = 0;
-function Node(y,x,peso,parent) {
+function Node(y,x,parent) {
 
     this.y = y;
     this.x = x;
-    this.peso = peso;
+    this.peso = checkPeso(y,x);
     if(parent){
-
-      this.peso = peso + parent.peso;
+      this.peso = checkPeso(y,x) + checkPeso(parent.y,parent.x);
     }
     this.parent = parent;
+    setClass(y,x,'visitou');
+}
 
+function sortNumbers(a, b) {
+  return a - b;
 }
 
 function addNode(data) {
@@ -107,7 +99,7 @@ window.x = 4;
 function custoUniforme(){
 
 	if(!Tree.length){
-		var node = new Node(window.y,window.x,0,null);
+		var node = new Node(window.y,window.x,null);
 		addNode(node);
 	}
 
@@ -116,33 +108,67 @@ function custoUniforme(){
 	if(Tree.length > 4){
 		t = 1;
 	}
+
+	var pesoAux = 0;
+	var arrayPesoVizinhos = [];
+
 	while(t < Tree.length){
+		
+
 		var vizinhos = getVizinhos(Tree[t].y,Tree[t].x);
-		var pesoVizinhos = 0;		
+
 		if(Tree.length > 4){
 			for (var v = 0; v < vizinhos.length; v++) {
-				pesoVizinhos = vizinhos[v].peso;
-				if(pesoVizinhos > 0 && pesoVizinhos > vizinhos[v].peso){
-					
-				}
-
+				
 				// remove dos vizinhos o nó que for igual ao nó pai
 				if(vizinhos[v].y == Tree[t].parent.y && vizinhos[v].x == Tree[t].parent.x){
 					vizinhos.splice(v,1);
 				}
 			}
 		}
-		console.log(pesoVizinhos);
+
+		// monta um array com os pesos dos vizinhos
+		for (var i = 0; i < vizinhos.length; i++) {
+			arrayPesoVizinhos.push(checkPeso(vizinhos[i].y,vizinhos[i].x));
+		}
+
+		// ordena os pesos para eliminar os maiores
+		arrayPesoVizinhos.sort(sortNumbers);
+		if(t % 4 == 0){
+
+			console.log('----')
+			console.log(arrayPesoVizinhos);
+			console.log('-------------------')
+
+		}
+
+		// remove se o peso for maior que o esperado
+		if(Tree.length > 4){
+			for (var v = 0; v < vizinhos.length; v++) {
+				
+				if(checkPeso(vizinhos[v].y,vizinhos[v].x) > arrayPesoVizinhos[0]){
+					vizinhos.splice(v,1);
+				}
+			}
+		}
+
 
 		// adiciona os restante dos nós na árvore
 		for (var v = 0; v < vizinhos.length; v++) {
-			newNodes.push(new Node(vizinhos[v].y,vizinhos[v].x,vizinhos[v].peso,Tree[t]));
+			newNodes.push(new Node(vizinhos[v].y,vizinhos[v].x,Tree[t]));
 		}
+
+		// if(t % 4 == 0){
+		// 	console.log('------------');
+		// 	console.log(t);
+		// 	console.log(newNodes);
+		// }
+
 		t++;
 	}
 
-	for (var i = 0; i < newNodes.length; i++) {
-		addNode(newNodes[i]);	
+	for (var x = 0; x < newNodes.length; x++) {
+		addNode(newNodes[x]);	
 	}
 	console.log(Tree);
 
@@ -178,7 +204,5 @@ function mostraMatriz(){
 <body onLoad="mostraMatriz()">
 	<div id="matriz"></div>
 	<center><button onClick=custoUniforme()>Custo Uniforme</button></center>
-	<center>Custo acumulado: <span id="custoAcumulado"></span></center>
-
 </body>
 </html>
