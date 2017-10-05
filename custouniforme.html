@@ -153,6 +153,8 @@ function custoUniforme(){
 		t++;
 	}
 
+	Tree = addNode;
+
 	for (var x = 0; x < newNodes.length; x++) {
 		addNode(newNodes[x]);
 	}
@@ -176,8 +178,8 @@ function mostraMatriz(){
 				default: classe = '';
 
 			}
-			// html += '<div id="y'+y+'x'+x+'" class="'+classe+'">' + matriz[y][x] + '</div>';
-			html += '<div id="y'+y+'x'+x+'" class="'+classe+'">' + matriz[y][x] + y + x + '</div>';
+			html += '<div id="y'+y+'x'+x+'" class="'+classe+'">' + matriz[y][x] + '</div>';
+			// html += '<div id="y'+y+'x'+x+'" class="'+classe+'">' + matriz[y][x] + y + x + '</div>';
 		}
 		html += '<br class="clear">';
 	}

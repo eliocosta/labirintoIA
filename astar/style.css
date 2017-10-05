@@ -4,16 +4,16 @@ body{
 }
 *{
 	font-family: Arial;
-	font-size: 14px;
+	/*font-size: 14px;*/
 	font-size: 10px
 }
 #matriz{
-	width: 700px;
+	/*width: 700px;*/
 	width: 1400px;
 	margin:5px auto;
 }
 #matriz div{
-	width: 15px;
+	/*width: 15px;*/
 	width: 32px;
 	height: 15px;
 	border: 1px solid black;
