@@ -105,22 +105,23 @@ function sortNumbers(a, b) {
 
 function addNode(data) {
   Tree.push(data);
-  setClass(data.y,data.x,'visitou');
+  // setClass(data.y,data.x,'visitou');
 }
 
 function trajeto(node){
 
-	// console.log(node);
-	setClass(node.y,node.x,'verde');
+	setTimeout(function(){
+		
+		setClass(node.y,node.x,'verde');
 
-	if(node.y != window.y || node.x != window.x){
-		// console.log('asdfasdf')
-		return trajeto(node.parent);
-	}
-	else{
-		return;
-	}
-	// amarelo
+		if(node.y != window.y || node.x != window.x){
+			// console.log('asdfasdf')
+			return trajeto(node.parent);
+		}
+		else{
+			return;
+		}
+	}, 50);
 }
 
 function custoUniforme(){
