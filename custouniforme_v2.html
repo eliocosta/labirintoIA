@@ -71,8 +71,8 @@ function getVizinhos(y,x) {
 						x: x+1
 					}];
 	
+	// adiciona no vetor visitedTree os nós que já tiveram seus filhos checados
 	if(visitedTree.length > 0){
-		console.log(visitedTree.length);
 		for(vt in visitedTree){
 			for(v in vizinhos){
 				if(vizinhos[v].y == visitedTree[vt].y && vizinhos[v].x == visitedTree[vt].x){
@@ -81,8 +81,6 @@ function getVizinhos(y,x) {
 			}
 		}
 	}
-	console.log(vizinhos);
-
 	return vizinhos;
 }
 
@@ -106,23 +104,17 @@ function addNode(data) {
   Tree.push(data);
   setClass(data.y,data.x,'visitou');
 }
-
-// pra nao fazer uma busca pelo I, já defini o ponto de partida
-window.y = 36;
-window.x = 4;
-
 function custoUniforme(){
 
-	if(!Tree.length){
-		var node = new Node(window.y,window.x,null);
-		addNode(node);
-	}
+	let yVal = Tree[0].y;
+	let xVal = Tree[0].x;
 
-	var vizinhos = getVizinhos(Tree[0].y,Tree[0].x);
-	var node = {y:Tree[0].y, x:Tree[0].x}
+	var vizinhos = getVizinhos(yVal,xVal);
+	var node = {y:yVal, x:xVal}
 	visitedTree.push(node);
 
-	if(Tree.length > 4){
+	// se o nó já tem um parent
+	if(Tree[0].parent){
 		for (var v = 0; v < vizinhos.length; v++) {
 			
 			// remove dos vizinhos o nó que for igual ao nó pai
@@ -138,8 +130,11 @@ function custoUniforme(){
 	Tree.splice(0,1);
 	Tree.sort(sortNumbers);
 
+	// if(matriz[yVal][xVal] != 'F'){
+
+	// 	custoUniforme();
+	// }
 	console.log(Tree);
-	// console.log(visitedTree);
 }
 
 function mostraMatriz(){
@@ -163,6 +158,9 @@ function mostraMatriz(){
 		html += '<br class="clear">';
 	}
 	document.getElementById("matriz").innerHTML = html;
+
+	// pra nao fazer uma busca pelo I, já defini o ponto de partida
+	addNode(new Node(36,4,null));
 }
 
 
