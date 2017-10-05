@@ -93,6 +93,7 @@ function Node(y,x,parent) {
 
     this.y = y;
     this.x = x;
+    this.value = matriz[y][x];
     this.peso = checkPeso(y,x);
     if(parent){
       this.peso = checkPeso(y,x) + checkPeso(parent.y,parent.x);
@@ -106,7 +107,7 @@ function sortNumbers(a, b) {
 
 function addNode(data) {
   Tree.push(data);
-  setClass(data.y,data.x,'visitou');
+  // setClass(data.y,data.x,'visitou');
 }
 
 function trajeto(node){
@@ -126,33 +127,50 @@ function trajeto(node){
 
 function custoUniforme(){
 
-	let yVal = Tree[0].y;
-	let xVal = Tree[0].x;
- 	
-	var node = {y:yVal, x:xVal}
-	visitedTree.push(node);
+	let yVal;
+	let xVal;
 
-	var vizinhos = getVizinhos(yVal,xVal);
-	// adiciona os vizinhos array
-	for (var v in vizinhos) {
-		addNode(new Node(vizinhos[v].y,vizinhos[v].x,Tree[0]));
-	}
+	// var p = new Promise (function (resolve, reject) {
+	    
+		yVal = Tree[0].y;
+		xVal = Tree[0].x;
+	 	
+		node = {y:yVal, x:xVal}
+		visitedTree.push(node);
 
-	// remove o primeiro elemento do array
-	Tree.splice(0,1);
+		var vizinhos = getVizinhos(yVal,xVal);
+		// adiciona os vizinhos array
+		for (var v in vizinhos) {
+			addNode(new Node(vizinhos[v].y,vizinhos[v].x,Tree[0]));
+		}
 
-	// ordena o array por pesos
-	Tree.sort(sortNumbers);
+		
 
-	// enquanto não encontrar o fim executa a funcao novamente
-	if(matriz[yVal][xVal] != 'F'){
-		custoUniforme();
-	}
-	else{
-		// quando encontrou o fim faz o trajeto de volta
-		trajeto(Tree[0]);
-		console.log(Tree);
-	}
+		// resolve(1);
+
+	// }).then(function(valor) {
+
+		// remove o primeiro elemento do array
+		Tree.splice(0,1);
+
+		// ordena o array por pesos
+		Tree.sort(sortNumbers);
+
+		// enquanto não encontrar o fim executa a funcao novamente
+		if(Tree[0].value != 'F'){
+			custoUniforme();
+		}
+		else{
+			// quando encontrou o fim faz o trajeto de volta
+			trajeto(Tree[0]);
+			console.log(Tree[0]);
+			console.log(Tree);
+		}
+
+	//   }, function(motivo) {
+	//   // rejeitada
+	// });
+
 }
 
 function mostraMatriz(){
