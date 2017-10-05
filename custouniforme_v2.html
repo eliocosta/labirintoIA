@@ -45,12 +45,15 @@ function checkPeso(y,x){
 		if(pesos[i].nome == pontoValor){
 			return pesos[i].peso;
 		}
-	};
+	}
 }
 
 
 var Tree = [];
 var visitedTree = [];
+
+window.y = 36;
+window.x = 4;
 
 function getVizinhos(y,x) {
 
@@ -104,6 +107,22 @@ function addNode(data) {
   Tree.push(data);
   setClass(data.y,data.x,'visitou');
 }
+
+function trajeto(node){
+
+	// console.log(node);
+	setClass(node.y,node.x,'verde');
+
+	if(node.y != window.y || node.x != window.x){
+		// console.log('asdfasdf')
+		return trajeto(node.parent);
+	}
+	else{
+		return;
+	}
+	// amarelo
+}
+
 function custoUniforme(){
 
 	let yVal = Tree[0].y;
@@ -124,17 +143,30 @@ function custoUniforme(){
 		}
 	}
 
+	// busca se tem um nó igual com peso maior ou igual
+	// for (var v = 0; v < vizinhos.length; v++) {
+	// 	for (var t = 0; t < Tree.length; t++) {
+	// 		if(vizinhos[v].y == Tree[t].y && vizinhos[v].x == Tree[t].x && checkPeso(vizinhos[v].y,vizinhos[v].x) >= Tree[t].peso){
+	// 			vizinhos.splice(v,1);
+	// 		}
+	// 	}
+	// }
+
+	// adiciona os vizinhos que sobraram no array
 	for (var v = 0; v < vizinhos.length; v++) {
 		addNode(new Node(vizinhos[v].y,vizinhos[v].x,Tree[0]));
 	}
+
 	Tree.splice(0,1);
 	Tree.sort(sortNumbers);
 
-	// if(matriz[yVal][xVal] != 'F'){
-
-	// 	custoUniforme();
-	// }
-	console.log(Tree);
+	if(matriz[yVal][xVal] != 'F'){
+		custoUniforme();
+	}
+	else{
+		trajeto(Tree[0]);
+	}
+	// console.log(Tree);
 }
 
 function mostraMatriz(){
@@ -160,7 +192,7 @@ function mostraMatriz(){
 	document.getElementById("matriz").innerHTML = html;
 
 	// pra nao fazer uma busca pelo I, já defini o ponto de partida
-	addNode(new Node(36,4,null));
+	addNode(new Node(window.y,window.x,null));
 }
 
 
