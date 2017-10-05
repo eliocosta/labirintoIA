@@ -121,7 +121,7 @@ function trajeto(node){
 		else{
 			return;
 		}
-	}, 50);
+	}, 10);
 }
 
 function custoUniforme(){
@@ -132,26 +132,6 @@ function custoUniforme(){
 	var vizinhos = getVizinhos(yVal,xVal);
 	var node = {y:yVal, x:xVal}
 	visitedTree.push(node);
-
-	// se o nó já tem um parent
-	if(Tree[0].parent){
-		for (var v = 0; v < vizinhos.length; v++) {
-			
-			// remove dos vizinhos o nó que for igual ao nó pai
-			if(vizinhos[v].y == Tree[0].parent.y && vizinhos[v].x == Tree[0].parent.x){
-				vizinhos.splice(v,1);
-			}
-		}
-	}
-
-	// busca se tem um nó igual com peso maior ou igual
-	// for (var v = 0; v < vizinhos.length; v++) {
-	// 	for (var t = 0; t < Tree.length; t++) {
-	// 		if(vizinhos[v].y == Tree[t].y && vizinhos[v].x == Tree[t].x && checkPeso(vizinhos[v].y,vizinhos[v].x) >= Tree[t].peso){
-	// 			vizinhos.splice(v,1);
-	// 		}
-	// 	}
-	// }
 
 	// adiciona os vizinhos que sobraram no array
 	for (var v = 0; v < vizinhos.length; v++) {
@@ -166,8 +146,8 @@ function custoUniforme(){
 	}
 	else{
 		trajeto(Tree[0]);
+		console.log(Tree);
 	}
-	// console.log(Tree);
 }
 
 function mostraMatriz(){
