@@ -272,9 +272,9 @@ function reload(){
     console.log("TREE: ", Tree);
 }
 
-//Setta a flag uniforme, para diferenciar na escolha dos algoritmos
+//Setta a flag, para diferenciar na escolha dos algoritmos
 //na função Node(y,x,parent)
-function buscaUniforme(flag){
+function buscaOpcao(flag){
     console.log("uniforme", flag);
     flagBusca = flag;
     if(reloadCount == 1){
@@ -283,37 +283,14 @@ function buscaUniforme(flag){
     buscaGenerica();
 }
 
-//Setta a flag gulosa, para diferenciar na escolha dos algoritmos
-//na função Node(y,x,parent)
-function buscaGulosa(flag){
-    console.log("gulosa", flag);
-    flagBusca = flag;
-    if(reloadCount == 1){
-        reload();
-    }
-    buscaGenerica();
-}
-
-//Setta a flag astar, para diferenciar na escolha dos algoritmos
-//na função Node(y,x,parent)
-function buscaAStar(flag){
-    console.log("astar", flag);
-    flagBusca = flag;
-    if(reloadCount == 1){
-        reload();
-    }
-    buscaGenerica();
-}
-
-
 </script>
 </head>
 <body onLoad="mostraMatriz()">
 	
 	<div id="button">
-	<button onClick=buscaUniforme("uniforme")>Busca Uniforme</button>
-	<button onClick=buscaGulosa("gulosa")>Busca Gulosa</button>
-	<button onClick=buscaAStar("astar")>Busca A Star</button>
+	<button onClick=buscaOpcao("uniforme")>Busca Uniforme</button>
+	<button onClick=buscaOpcao("gulosa")>Busca Gulosa</button>
+	<button onClick=buscaOpcao("astar")>Busca A Star</button>
 	</div>
 
 	<div id="matriz"></div>
