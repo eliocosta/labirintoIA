@@ -265,6 +265,8 @@ var reloadCount = 0;
 function reload(){
     Tree = [];
     visitedTree = [];
+    pesoD = 300;
+	ipesoC = 0;
     mostraMatriz();
 
     console.log("TREE: ", Tree);
@@ -313,7 +315,7 @@ function buscaAStar(flag){
 	<button onClick=buscaGulosa("gulosa")>Busca Gulosa</button>
 	<button onClick=buscaAStar("astar")>Busca A Star</button>
 	</div>
-	
+
 	<div id="matriz"></div>
 	
 </body>
