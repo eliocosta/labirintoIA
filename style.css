@@ -8,6 +8,12 @@ body{
 	font-size: 14px;
 	/*font-size: 10px*/
 }
+button{
+	margin: 10px;
+}
+#button{
+	text-align: center;
+}
 #matriz{
 	width: 700px;
 	/*width: 1400px;*/
