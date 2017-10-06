@@ -1,0 +1,210 @@
+<html>
+<head>
+	<title>Labirinto</title>
+<link href="style.css" media="all" rel="stylesheet" />
+<script type="text/javascript" src="matrix.js"></script>
+
+<script type="text/javascript">
+
+function setClass(node,classe){
+	document.getElementById('y'+node.y+'x'+node.x).className = classe;
+}
+
+function checkPeso(y,x){
+	var pesos = [
+					{
+						nome: 'I',
+						peso: 0,
+					},
+					{
+						nome: '.',
+						peso: 1
+					},
+					{
+						nome: 'G',
+						peso: 5
+					},
+					{
+						nome: 'D',
+						peso: 300,
+						//incremento: 0.9
+					},
+					{
+						nome: 'C',
+						peso: 60,
+						//peso: [60,80,100,120,140,160,180,200,220,250],
+					},
+					{
+						nome: 'F',
+						peso: 0,
+						//peso: [60,80,100,120,140,160,180,200,220,250],
+					}
+				];
+
+	pontoValor = matriz[y][x];
+	for (var i = pesos.length - 1; i >= 0; i--) {
+		if(pesos[i].nome == pontoValor){
+			return pesos[i].peso;
+		}
+	};
+}
+
+function Node(y,x,parent) {
+
+    this.y = y;
+    this.x = x;
+    // this.visited = false;
+    this.peso = checkPeso(y,x);
+    if(parent){
+      this.peso = checkPeso(y,x) + checkPeso(parent.y,parent.x);
+    }
+    this.parent = parent;
+}
+
+
+function getVizinhos(node) {
+
+	console.log(node);
+
+	var vizinhos = [];
+
+	var v1 = new Node(node.y-1, node.x, node);
+	vizinhos.push(v1);
+
+	var v2 = new Node(node.y+1, node.x, node);
+	vizinhos.push(v2);
+
+	var v3 = new Node(node.y, node.x-1, node);
+	vizinhos.push(v3);
+
+	var v4 = new Node(node.y, node.x+1, node);
+	vizinhos.push(v4);
+
+	return vizinhos;
+}
+
+function sortNumbers(a, b) {
+  return a.peso - b.peso;
+}
+
+var Tree = [];
+
+function addNode(node) {
+  Tree.push(node);
+  setClass(node,'visitou');
+}
+
+var nodesToFind = [];
+var nodesCost = [];
+
+function custoUniforme(){
+
+	var t = 0;
+
+	while(t < Tree.length){
+
+		console.log('------------------------ t: ' + t + '---------------------------------')
+		
+		var vizinhos = getVizinhos(Tree[t]);
+
+		// ordena o array de pesos
+		vizinhos.sort(sortNumbers);
+		
+		nodesToFind.push(vizinhos[0]);
+		console.log(vizinhos);
+		console.log(nodesToFind);
+
+		t++;
+	}
+
+	for(n in nodesToFind){
+		addNode(nodesToFind[n]);
+	}
+
+	console.log(Tree);
+
+	// if(Tree.length > 4){
+	// 	for (var v = 0; v < vizinhos.length; v++) {
+			
+	// 		// remove dos vizinhos o nó que for igual ao nó pai
+	// 		if(vizinhos[v].y == Tree[t].parent.y && vizinhos[v].x == Tree[t].parent.x){
+	// 			vizinhos.splice(v,1);
+	// 		}
+	// 	}
+	// }
+
+/*
+	// gera uma array com os pesos
+	for (var v = 0; v < vizinhos.length; v++) {
+		arrayPesoVizinhos.push(checkPeso(vizinhos[v].y,vizinhos[v].x));
+	}
+	// ordena o array de pesos
+	arrayPesoVizinhos.sort(sortNumbers);
+
+	console.log('----peso: ' + arrayPesoVizinhos[0] );
+
+	// remove dos nós quem tiver o peso maior que o primeiro elemento do array
+	for (var v2 = 0; v2 < vizinhos.length; v2++) {
+		if(checkPeso(vizinhos[v2].y,vizinhos[v2].x) > arrayPesoVizinhos[0]){
+			vizinhos.splice(v2,1);
+		}
+	}
+
+	console.log('----------vizinhos----------');
+	console.log(vizinhos);
+
+	// adiciona os restante dos nós na árvore
+	for (var v = 0; v < vizinhos.length; v++) {
+		newNodes.push(new Node(vizinhos[v].y,vizinhos[v].x,Tree[t]));
+	}
+
+
+	console.log('----------newNodes----------');
+	console.log(newNodes);
+
+	// remove o zero do array
+	// Tree.splice(t, 1);
+
+
+	for (var x = 0; x < newNodes.length; x++) {
+		addNode(newNodes[x]);
+	}
+	console.log(Tree);
+*/
+}
+
+
+function mostraMatriz(){
+	var classe;
+	var html = '';
+	for (var y = 0; y < matriz.length; y++) {
+		for (var x = 0; x < matriz[y].length; x++) {
+
+			switch(matriz[y][x]){
+				case 'D': classe = 'cinzaEscuro';break;
+				case 'G': classe = 'cinzaClaro';break;
+				case 'C': classe = 'amarelo';break;
+				case 'I': classe = 'laranja';break;
+				case 'F': classe = 'verde';break;
+				default: classe = '';
+
+			}
+			html += '<div id="y'+y+'x'+x+'" class="'+classe+'">' + matriz[y][x] + '</div>';
+			// html += '<div id="y'+y+'x'+x+'" class="'+classe+'">' + matriz[y][x] + y + x + '</div>';
+		}
+		html += '<br class="clear">';
+	}
+	document.getElementById("matriz").innerHTML = html;
+
+	// pra nao fazer uma busca pelo I, já defini o ponto de partida
+	addNode(new Node(36,4,null));
+}
+
+
+</script>
+</head>
+<body onLoad="mostraMatriz()">
+	<div id="matriz"></div>
+	<center><button onClick=custoUniforme()>Custo Uniforme</button></center>
+</body>
+</html>
