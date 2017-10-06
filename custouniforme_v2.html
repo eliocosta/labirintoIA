@@ -119,17 +119,17 @@ function addNode(data) {
 	// verifica se já existe um nó de mesmo peso e coordenadas no array
 	let encontrado = false;
 	for(let t in Tree){
-		if(data.y == Tree[t].y && data.x == Tree[t].x && data.peso == Tree[t].peso){
+		if(data.y == Tree[t].y && data.x == Tree[t].x && data.peso >= Tree[t].peso){
 			encontrado = true;
 		}
 	}
 	if(encontrado == false){
 		if(data.value == 'C'){
 			ipesoC++;
-			console.log(data);
+			// console.log(data);
 		}
 		else if(data.value == 'D'){
-			console.log(data);
+			// console.log(data);
 			// setPesoD();
 		}
 
