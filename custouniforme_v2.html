@@ -63,6 +63,13 @@ function checkPeso(y,x){
 	}
 }
 
+function checkHeuristica(y,x){
+
+	var d1 = (x - 36) * (x - 36);
+    var d2 = (y - 36) * (y - 36);
+    return Math.sqrt(d1 + d2);
+}
+
 
 var Tree = [];
 var visitedTree = [];
@@ -125,26 +132,16 @@ function Node(y,x,parent) {
             this.peso = checkPeso(y,x);
         }
     } else if (flagBusca == 'gulosa'){
-        var d1 = (this.x - 36) * (this.x - 36);
-        var d2 = (this.y - 36) * (this.y - 36);
-        var resultado = Math.sqrt(d1 + d2);
-
         if(parent){
-            this.peso = resultado;
-            //checkPeso(y,x) + checkPeso(parent.y,parent.x);
+            this.peso = checkHeuristica(y,x);
         }
         else{
             this.peso = 0;
-            //checkPeso(y,x);
         }
 
     } else if (flagBusca == 'astar'){
-        var d1 = (this.x - 36) * (this.x - 36);
-        var d2 = (this.y - 36) * (this.y - 36);
-        var resultado = Math.sqrt(d1 + d2);
-
         if(parent){
-            this.peso = checkPeso(y,x) + checkPeso(parent.y,parent.x) + resultado;
+            this.peso = checkPeso(y,x) + checkPeso(parent.y,parent.x) + checkHeuristica(y,x);
         }
         else{
             this.peso = checkPeso(y,x) + 0;
@@ -275,7 +272,7 @@ function reload(){
 //Setta a flag, para diferenciar na escolha dos algoritmos
 //na função Node(y,x,parent)
 function buscaOpcao(flag){
-    console.log("uniforme", flag);
+    console.log(flag);
     flagBusca = flag;
     if(reloadCount == 1){
         reload();
