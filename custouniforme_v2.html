@@ -10,8 +10,9 @@ function setClass(yVal,xVal,classe){
 	document.getElementById('y'+yVal+'x'+xVal).className = classe;
 }
 var pesoD = 0;
-
+var ipesoC = 0;
 function checkPeso(y,x){
+	var pesoC = [60,80,100,120,140,160,180,200,220,250];
 	var pesos = [
 					{
 						nome: 'I',
@@ -32,8 +33,7 @@ function checkPeso(y,x){
 					},
 					{
 						nome: 'C',
-						peso: 60,
-						//peso: [60,80,100,120,140,160,180,200,220,250],
+						peso: pesoC[ipesoC],
 					},
 					{
 						nome: 'F',
@@ -42,7 +42,7 @@ function checkPeso(y,x){
 				];
 
 	pontoValor = matriz[y][x];
-	for (var i in pesos) {
+	for (let i in pesos) {
 		if(pesos[i].nome == pontoValor){
 			return pesos[i].peso;
 		}
@@ -77,8 +77,8 @@ function getVizinhos(y,x) {
 	
 	// adiciona no vetor visitedTree os nós que já tiveram seus filhos visitados
 	if(visitedTree.length > 0){
-		for(vt in visitedTree){
-			for(v in vizinhos){
+		for(let vt in visitedTree){
+			for(let v in vizinhos){
 				if(vizinhos[v].y == visitedTree[vt].y && vizinhos[v].x == visitedTree[vt].x){
 					vizinhos.splice(v,1);
 				}
@@ -94,20 +94,36 @@ function Node(y,x,parent) {
     this.y = y;
     this.x = x;
     this.value = matriz[y][x];
-    this.peso = checkPeso(y,x);
     if(parent){
-      this.peso = checkPeso(y,x) + checkPeso(parent.y,parent.x);
+		this.peso = checkPeso(y,x) + checkPeso(parent.y,parent.x);
+    }
+    else{
+    	this.peso = checkPeso(y,x);
     }
     this.parent = parent;
 }
 
 function sortNumbers(a, b) {
-  return a.peso - b.peso;
+	return a.peso - b.peso;
 }
 
 function addNode(data) {
-  Tree.push(data);
-  // setClass(data.y,data.x,'visitou');
+
+	// verifica se já existe um nó de mesmo peso e coordenadas no array
+	let encontrado = false;
+	for(let t in Tree){
+		if(data.y == Tree[t].y && data.x == Tree[t].x && data.peso == Tree[t].peso){
+			encontrado = true;
+		}
+	}
+	if(encontrado == false){
+		if(data.value == 'C'){
+			console.log(data);
+			// ipesoC++;
+		}
+	  	Tree.push(data);
+		setClass(data.y,data.x,'visitou');
+	}
 }
 
 function trajeto(node){
@@ -127,57 +143,41 @@ function trajeto(node){
 
 function custoUniforme(){
 
-	let yVal;
-	let xVal;
+	let yVal = Tree[0].y;
+	let xVal = Tree[0].x;
+ 	
+	node = {y:yVal, x:xVal}
+	visitedTree.push(node);
 
-	// var p = new Promise (function (resolve, reject) {
-	    
-		yVal = Tree[0].y;
-		xVal = Tree[0].x;
-	 	
-		node = {y:yVal, x:xVal}
-		visitedTree.push(node);
+	var vizinhos = getVizinhos(yVal,xVal);
+	// adiciona os vizinhos no array
+	for (var v in vizinhos) {
+		addNode(new Node(vizinhos[v].y,vizinhos[v].x,Tree[0]));
+	}
 
-		var vizinhos = getVizinhos(yVal,xVal);
-		// adiciona os vizinhos array
-		for (var v in vizinhos) {
-			addNode(new Node(vizinhos[v].y,vizinhos[v].x,Tree[0]));
-		}
+	// remove o primeiro elemento do array
+	Tree.splice(0,1);
 
-		
+	// ordena o array por pesos
+	Tree.sort(sortNumbers);
 
-		// resolve(1);
+	// enquanto não encontrar o fim executa a funcao novamente
+	if(Tree[0].value != 'F'){
+		custoUniforme();
+	}
+	else{
+		// quando encontrou o fim faz o trajeto de volta
+		trajeto(Tree[0]);
+	}
 
-	// }).then(function(valor) {
-
-		// remove o primeiro elemento do array
-		Tree.splice(0,1);
-
-		// ordena o array por pesos
-		Tree.sort(sortNumbers);
-
-		// enquanto não encontrar o fim executa a funcao novamente
-		if(Tree[0].value != 'F'){
-			custoUniforme();
-		}
-		else{
-			// quando encontrou o fim faz o trajeto de volta
-			trajeto(Tree[0]);
-			console.log(Tree[0]);
-			console.log(Tree);
-		}
-
-	//   }, function(motivo) {
-	//   // rejeitada
-	// });
-
+	// console.log(Tree);
 }
 
 function mostraMatriz(){
 	var classe;
 	var html = '';
-	for (var y = 0; y < matriz.length; y++) {
-		for (var x = 0; x < matriz[y].length; x++) {
+	for (let y = 0; y < matriz.length; y++) {
+		for (let x = 0; x < matriz[y].length; x++) {
 
 			switch(matriz[y][x]){
 				case 'D': classe = 'cinzaEscuro';break;
