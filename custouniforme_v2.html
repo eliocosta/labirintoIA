@@ -12,6 +12,17 @@ function setClass(yVal,xVal,classe){
 var pesoD = 300;
 var ipesoC = 0;
 
+var Tree = [];
+var visitedTree = [];
+
+window.y = 36;
+window.x = 4;
+
+var flagBusca;
+var reloadCount = 0;
+
+var custoTrajeto = 0;
+
 function setPesoD(){
 	return pesoD = pesoD * 0.9;
 }
@@ -64,18 +75,11 @@ function checkPeso(y,x){
 }
 
 function checkHeuristica(y,x){
-
+	// euclidiana
 	var d1 = (x - 36) * (x - 36);
     var d2 = (y - 36) * (y - 36);
     return Math.sqrt(d1 + d2);
 }
-
-
-var Tree = [];
-var visitedTree = [];
-
-window.y = 36;
-window.x = 4;
 
 function getVizinhos(y,x) {
 
@@ -186,6 +190,7 @@ function trajeto(node){
 		setClass(node.y,node.x,'verde');
 
 		if(node.y != window.y || node.x != window.x){
+			custoTrajeto += node.peso;
 			return trajeto(node.parent);
 		}
 		else{
@@ -254,9 +259,6 @@ function mostraMatriz(){
 	addNode(new Node(window.y,window.x,null));
 }
 
-var flagBusca;
-var reloadCount = 0;
-
 //Função para recarregar a matriz quando clicar em algum botão
 //pela segunda vez. Esvazia a Tree[] e a visitedTree[]
 function reload(){
@@ -265,7 +267,7 @@ function reload(){
     pesoD = 300;
 	ipesoC = 0;
     mostraMatriz();
-
+    custoTrajeto = 0;
     console.log("TREE: ", Tree);
 }
 
@@ -285,9 +287,9 @@ function buscaOpcao(flag){
 <body onLoad="mostraMatriz()">
 	
 	<div id="button">
-	<button onClick=buscaOpcao("uniforme")>Busca Uniforme</button>
-	<button onClick=buscaOpcao("gulosa")>Busca Gulosa</button>
-	<button onClick=buscaOpcao("astar")>Busca A Star</button>
+		<button onClick=buscaOpcao("uniforme")>Busca Uniforme</button>
+		<button onClick=buscaOpcao("gulosa")>Busca Gulosa</button>
+		<button onClick=buscaOpcao("astar")>Busca A Star</button>
 	</div>
 
 	<div id="matriz"></div>
