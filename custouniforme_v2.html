@@ -66,10 +66,16 @@ function checkPeso(y,x){
 					}
 				];
 
+	// for(let t in Tree){
+
+	// }
+
+
 	pontoValor = matriz[y][x];
 	for (let i in pesos) {
 		if(pesos[i].nome == pontoValor){
 			return pesos[i].peso;
+
 		}
 	}
 }
@@ -104,10 +110,6 @@ function getVizinhos(y,x) {
 						x: x+1
 					}];
 
-	// for(let v in vizinhos){
-	// 	if(vizinhos[v].y > )
-	// }
-
 	// adiciona no vetor visitedTree os nós que já tiveram seus filhos visitados
 	if(visitedTree.length > 0){
 		for(let vt in visitedTree){
@@ -128,29 +130,17 @@ function Node(y,x,parent) {
     this.x = x;
     this.value = matriz[y][x];
 
+    if(!parent){
+    	this.peso = 0;
+    }
+
     if(flagBusca == 'uniforme'){
-        if(parent){
-            this.peso = checkPeso(y,x) + checkPeso(parent.y,parent.x);
-        }
-        else{
-            this.peso = checkPeso(y,x);
-        }
+		this.peso = checkPeso(y,x) + parent.peso;
     } else if (flagBusca == 'gulosa'){
-        if(parent){
-            this.peso = checkHeuristica(y,x);
-        }
-        else{
-            this.peso = 0;
-        }
+		this.peso = checkHeuristica(y,x);
 
     } else if (flagBusca == 'astar'){
-        if(parent){
-            this.peso = checkPeso(y,x) + checkPeso(parent.y,parent.x) + checkHeuristica(y,x);
-        }
-        else{
-            this.peso = checkPeso(y,x) + 0;
-        }
-
+		this.peso = checkPeso(y,x) + parent.peso + checkHeuristica(y,x);
     }
 	this.parent = parent;
 }
@@ -197,7 +187,8 @@ function trajeto(node){
 			reloadCount = 1;
 			return;
 		}
-	}, 20);
+
+	}, 30);
 }
 
 function buscaGenerica(){
@@ -222,14 +213,17 @@ function buscaGenerica(){
 
 	// enquanto não encontrar o fim executa a funcao novamente
 	if(Tree[0].value != 'F'){
-		buscaGenerica();
+		setTimeout(function(){
+			buscaGenerica();
+		}, 20);
 	}
 	else{
 		// quando encontrou o fim faz o trajeto de volta
 		trajeto(Tree[0]);
+
+		console.log(Tree);
 	}
 
-	// console.log(Tree);
 }
 
 function mostraMatriz(){
