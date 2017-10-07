@@ -130,17 +130,23 @@ function Node(y,x,parent) {
     this.x = x;
     this.value = matriz[y][x];
 
-    if(!parent){
-    	this.peso = 0;
-    }
-
     if(flagBusca == 'uniforme'){
-		this.peso = checkPeso(y,x) + parent.peso;
+    	if(parent){
+			this.peso = checkPeso(y,x) + parent.peso;
+		}
+		else{		
+			this.peso = 0;		
+		}
     } else if (flagBusca == 'gulosa'){
 		this.peso = checkHeuristica(y,x);
-
     } else if (flagBusca == 'astar'){
-		this.peso = checkPeso(y,x) + parent.peso + checkHeuristica(y,x);
+		if(parent){
+			this.peso = checkPeso(y,x) + parent.peso + checkHeuristica(y,x);
+		}
+		else{
+			// peso do I é zero (não precisa calcular)
+			this.peso = checkHeuristica(y,x);		
+		}
     }
 	this.parent = parent;
 }
@@ -165,7 +171,7 @@ function addNode(data) {
 		}
 		else if(data.value == 'D'){
 			// console.log(data);
-			setPesoD();
+			// setPesoD();
 		}
 
 	  	Tree.push(data);
@@ -221,9 +227,8 @@ function buscaGenerica(){
 		// quando encontrou o fim faz o trajeto de volta
 		trajeto(Tree[0]);
 
-		console.log(Tree);
+		// console.log(Tree[0]);
 	}
-
 }
 
 function mostraMatriz(){
@@ -247,10 +252,6 @@ function mostraMatriz(){
 		html += '<br class="clear">';
 	}
 	document.getElementById("matriz").innerHTML = html;
-
-	// pra nao fazer uma busca pelo I, já defini o ponto de partida
-	// adicionando o primero nó no array
-	addNode(new Node(window.y,window.x,null));
 }
 
 //Função para recarregar a matriz quando clicar em algum botão
@@ -273,6 +274,11 @@ function buscaOpcao(flag){
     if(reloadCount == 1){
         reload();
 	}
+
+	// pra nao fazer uma busca pelo I, já defini o ponto de partida
+	// adicionando o primero nó no array
+	addNode(new Node(window.y,window.x,null));
+
     buscaGenerica();
 }
 
