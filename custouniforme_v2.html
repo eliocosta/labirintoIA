@@ -62,14 +62,9 @@ function checkPeso(y,x){
 					},
 					{
 						nome: 'F',
-						peso: 0,
+						peso: 1,
 					}
 				];
-
-	// for(let t in Tree){
-
-	// }
-
 
 	pontoValor = matriz[y][x];
 	for (let i in pesos) {
@@ -160,7 +155,10 @@ function addNode(data) {
 	// verifica se já existe um nó de mesmo peso e coordenadas no array
 	let encontrado = false;
 	for(let t in Tree){
-		if(data.y == Tree[t].y && data.x == Tree[t].x && data.peso >= Tree[t].peso){
+		// if(data.y == Tree[t].y && data.x == Tree[t].x && data.peso >= Tree[t].peso){
+		
+		// parece mais certo (sem a checagem de peso/custo)
+		if(data.y == Tree[t].y && data.x == Tree[t].x){
 			encontrado = true;
 		}
 	}
@@ -171,7 +169,7 @@ function addNode(data) {
 		}
 		else if(data.value == 'D'){
 			// console.log(data);
-			// setPesoD();
+			setPesoD();
 		}
 
 	  	Tree.push(data);
@@ -194,7 +192,7 @@ function trajeto(node){
 			return;
 		}
 
-	}, 30);
+	}, 20);
 }
 
 function buscaGenerica(){
@@ -221,7 +219,7 @@ function buscaGenerica(){
 	if(Tree[0].value != 'F'){
 		setTimeout(function(){
 			buscaGenerica();
-		}, 20);
+		}, 2);
 	}
 	else{
 		// quando encontrou o fim faz o trajeto de volta
