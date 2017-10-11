@@ -1,11 +1,12 @@
 <html>
 <head>
 	<title>Labirinto</title>
-<link href="style.css" media="all" rel="stylesheet" />
-<script type="text/javascript" src="matrix.js"></script>
+	<link href="style.css" media="all" rel="stylesheet" />
+	<script type="text/javascript" src="matrix.js"></script>
 
-<script type="text/javascript">
+	<script type="text/javascript">
 
+//Função para pintar as divs que representam os nós da matriz.
 function setClass(yVal,xVal,classe){
 	document.getElementById('y'+yVal+'x'+xVal).className = classe;
 }
@@ -25,40 +26,44 @@ var custoTrajeto = 0;
 function setPesoC(){
 	return ipesoC++;
 }
+
 function getPesoC(){
 	var pesosC = [60,80,100,120,140,160,180,200,220,250];
 	return pesosC[ipesoC];
 }
 
 function checkPeso(y,x,node){
+	//Array para guardar e relacionar os pesos e os nomes.
 	var pesos = [
-					{
-						nome: 'I',
-						peso: 0,
-					},
-					{
-						nome: '.',
-						peso: 1
-					},
-					{
-						nome: 'G',
-						peso: 5
-					},
-					{
-						nome: 'D',
-						peso: node.d
-					},
-					{
-						nome: 'C',
-						peso: getPesoC()
-					},
-					{
-						nome: 'F',
-						peso: 1,
-					}
-				];
+	{
+		nome: 'I',
+		peso: 0,
+	},
+	{
+		nome: '.',
+		peso: 1
+	},
+	{
+		nome: 'G',
+		peso: 5
+	},
+	{
+		nome: 'D',
+		peso: node.d
+	},
+	{
+		nome: 'C',
+		peso: getPesoC()
+	},
+	{
+		nome: 'F',
+		peso: 1,
+	}
+	];
 
 	pontoValor = matriz[y][x];
+
+	//Serve para percorrer o vetor e comparar com o nome do nó que foi recebido, para retornar o peso correspondente.	
 	for (let i in pesos) {
 		if(pesos[i].nome == pontoValor){
 			return pesos[i].peso;
@@ -68,36 +73,39 @@ function checkPeso(y,x,node){
 }
 
 function checkHeuristica(y,x){
-	// euclidiana
+	//Cálculo da Heurística Euclidiana.
 	var d1 = (x - 36) * (x - 36);
-    var d2 = (y - 36) * (y - 36);
-    return Math.sqrt(d1 + d2);
+	var d2 = (y - 36) * (y - 36);
+	return Math.sqrt(d1 + d2);
 }
 
+//Fun
 function getVizinhos(y,x) {
 
+	//Tratamento para não checar fora das bordas.	
 	if((x > 39 || y > 39) || x < 1 || y < 1){
 		return false;
 	}
 
+	//Vetor para armazenar os vizinhos.
 	var vizinhos = [{
-						y: y-1,
-						x: x
-					},
-					{
-						y: y+1,
-						x: x
-					},
-					{
-						y: y,
-						x: x-1
-					},
-					{
-						y: y,
-						x: x+1
-					}];
+		y: y-1,
+		x: x
+	},
+	{
+		y: y+1,
+		x: x
+	},
+	{
+		y: y,
+		x: x-1
+	},
+	{
+		y: y,
+		x: x+1
+	}];
 
-	// adiciona no vetor visitedTree os nós que já tiveram seus filhos visitados
+	//Adiciona no vetor 'visitedTree' os nós que já tiveram seus filhos visitados e remove estes nós do vetor 'vizinhos'.
 	if(visitedTree.length > 0){
 		for(let vt in visitedTree){
 			for(let v in vizinhos){
@@ -107,27 +115,32 @@ function getVizinhos(y,x) {
 			}
 		}
 	}
+
 	return vizinhos;
 }
 
 
 function Node(y,x,parent) {
 
-    this.y = y;
-    this.x = x;
-    this.value = matriz[y][x];
-    this.heuristica = checkHeuristica(y,x);
+	this.y = y;
+	this.x = x;
+	this.value = matriz[y][x];
+	this.heuristica = checkHeuristica(y,x);
 	this.d = 1000/3;
 
-    if(this.value == 'D'){
-    	this.d = parent.d * 0.9;
-    }
-    else{
-    	if(parent){
-    		this.d = parent.d;
-    	}
-    }
+	//Se for um nó com o valor 'D', calcula qual será o novo valor, dependendo de seu parent.
+	if(this.value == 'D'){
+		this.d = parent.d * 0.9;
+	}
+	//Se não for um nó com o valor 'D', apenas copia o valor de d passado.
+	else{
+		if(parent){
+			this.d = parent.d;
+		}
+	}
 
+	//Se o nó tiver um parent, calcula o novo peso.
+	//O único nó que não terá um parent é o I (inicial), portanto o peso será 0.
 	if(parent){
 		this.peso = checkPeso(y,x,this) + parent.peso;
 	}
@@ -135,10 +148,13 @@ function Node(y,x,parent) {
 		this.peso = 0;
 	}
 
-    this.parent = parent;
+	this.parent = parent;
 }
 
+//Regra de ordenação do vetor para posteriormente inserir no sort do Javascript. 
+//Diferente para cada tipo de busca.
 function sortNumbers(a, b) {
+
 	if(flagBusca == 'astar'){
 		return (a.peso + a.heuristica) - (b.peso + b.heuristica);
 	}
@@ -152,8 +168,10 @@ function sortNumbers(a, b) {
 
 function addNode(data) {
 
-	// verifica se já existe um nó de mesmo peso e coordenadas no array
 	let encontrado = false;
+	
+	//Verifica se já existe um nó com as mesmas coordenadas e peso >= que um nó já existente no array.
+	//Se existe, ele não adiciona o nó no array, se não existe, ele adiciona.
 	for(let t in Tree){
 		if(data.y == Tree[t].y && data.x == Tree[t].x && data.peso >= Tree[t].peso){
 			encontrado = true;
@@ -165,15 +183,18 @@ function addNode(data) {
 			// console.log(data);
 		}
 
-	  	Tree.push(data);
+		Tree.push(data);
+		//Pinta a div do nó que entrou na árvore, no array.
 		setClass(data.y,data.x,'visitou');
 	}
 }
 
+//Função que percorre recursivamente a árvore a partir do nó passado.
 function trajeto(node){
 
 	setTimeout(function(){
 
+		//Define a classe 'verde' para destacar o trajeto encontrado pela busca.
 		setClass(node.y,node.x,'verde');
 
 		if(node.y != window.y || node.x != window.x){
@@ -197,28 +218,29 @@ function buscaGenerica(){
 	visitedTree.push(node);
 
 	var vizinhos = getVizinhos(yVal,xVal);
-	// adiciona os vizinhos no array
+	
+	//Adiciona os vizinhos no array
 	for (var v in vizinhos) {
 		addNode(new Node(vizinhos[v].y,vizinhos[v].x,Tree[0]));
 	}
 
-	// remove o primeiro elemento do array
+	//Remove o primeiro elemento do array.
+	//0 é a posição do array e 1 é quantos elementos vai remover a partir da posição.
 	Tree.splice(0,1);
 
-	// ordena o array por pesos
+	//Ordena o array por pesos.
 	Tree.sort(sortNumbers);
 
 	// console.log(Tree);
 
-
-	// enquanto não encontrar o fim executa a funcao novamente
+	//Enquanto não encontrar o fim executa a função novamente.
 	if(Tree[0].value != 'F'){
 		setTimeout(function(){
 			buscaGenerica();
 		}, 1);
 	}
 	else{
-		// quando encontrou o fim faz o trajeto de volta
+		//Quando encontrou o fim faz o trajeto de volta.
 		trajeto(Tree[0]);
 
 		// console.log(Tree[0]);
@@ -248,31 +270,29 @@ function mostraMatriz(){
 	document.getElementById("matriz").innerHTML = html;
 }
 
-//Função para recarregar a matriz quando clicar em algum botão
-//pela segunda vez. Esvazia a Tree[] e a visitedTree[]
+//Função para recarregar a matriz quando clicar em algum botão pela segunda vez. 
+//Esvazia a 'Tree' e a 'visitedTree'.
 function reload(){
-    Tree = [];
-    visitedTree = [];
+	Tree = [];
+	visitedTree = [];
 	ipesoC = 0;
-    mostraMatriz();
-    custoTrajeto = 0;
-    console.log("TREE: ", Tree);
+	mostraMatriz();
+	custoTrajeto = 0;
+	console.log("TREE: ", Tree);
 }
 
-//Setta a flag, para diferenciar na escolha dos algoritmos
-//na função Node(y,x,parent)
+//Setta a flag, para diferenciar na escolha dos algoritmos na função Node(y,x,parent)
 function buscaOpcao(flag){
-    console.log(flag);
-    flagBusca = flag;
-    if(reloadCount == 1){
-        reload();
+	console.log(flag);
+	flagBusca = flag;
+	if(reloadCount == 1){
+		reload();
 	}
 
-	// pra nao fazer uma busca pelo I, já defini o ponto de partida
-	// adicionando o primero nó no array
+	//Para não fazer uma busca pelo I, já é definido o ponto de partida adicionando o primero nó no array.
 	addNode(new Node(window.y,window.x,null));
 
-    buscaGenerica();
+	buscaGenerica();
 }
 
 </script>
@@ -286,6 +306,6 @@ function buscaOpcao(flag){
 	</div>
 
 	<div id="matriz"></div>
-	
+
 </body>
 </html>
