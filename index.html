@@ -9,7 +9,6 @@
 function setClass(yVal,xVal,classe){
 	document.getElementById('y'+yVal+'x'+xVal).className = classe;
 }
-var pesoD = 300;
 var ipesoC = 0;
 
 var Tree = [];
@@ -23,13 +22,6 @@ var reloadCount = 0;
 
 var custoTrajeto = 0;
 
-function setPesoD(){
-	return pesoD = pesoD * 0.9;
-}
-function getPesoD(){
-	return pesoD;
-}
-
 function setPesoC(){
 	return ipesoC++;
 }
@@ -38,7 +30,7 @@ function getPesoC(){
 	return pesosC[ipesoC];
 }
 
-function checkPeso(y,x){
+function checkPeso(y,x,node){
 	var pesos = [
 					{
 						nome: 'I',
@@ -54,7 +46,7 @@ function checkPeso(y,x){
 					},
 					{
 						nome: 'D',
-						peso: getPesoD()
+						peso: node.d
 					},
 					{
 						nome: 'C',
@@ -124,30 +116,38 @@ function Node(y,x,parent) {
     this.y = y;
     this.x = x;
     this.value = matriz[y][x];
+    this.heuristica = checkHeuristica(y,x);
+	this.d = 1000/3;
 
-    if(flagBusca == 'uniforme'){
-    	if(parent){
-			this.peso = checkPeso(y,x) + parent.peso;
-		}
-		else{		
-			this.peso = 0;		
-		}
-    } else if (flagBusca == 'gulosa'){
-		this.peso = checkHeuristica(y,x);
-    } else if (flagBusca == 'astar'){
-		if(parent){
-			this.peso = checkPeso(y,x) + parent.peso + checkHeuristica(y,x);
-		}
-		else{
-			// peso do I é zero (não precisa calcular)
-			this.peso = checkHeuristica(y,x);		
-		}
+    if(this.value == 'D'){
+    	this.d = parent.d * 0.9;
     }
-	this.parent = parent;
+    else{
+    	if(parent){
+    		this.d = parent.d;
+    	}
+    }
+
+	if(parent){
+		this.peso = checkPeso(y,x,this) + parent.peso;
+	}
+	else{
+		this.peso = 0;
+	}
+
+    this.parent = parent;
 }
 
 function sortNumbers(a, b) {
-	return a.peso - b.peso;
+	if(flagBusca == 'astar'){
+		return (a.peso + a.heuristica) - (b.peso + b.heuristica);
+	}
+	else if (flagBusca == 'gulosa'){
+		return a.heuristica - b.heuristica;
+	}
+	else{
+		return a.peso - b.peso;
+	}
 }
 
 function addNode(data) {
@@ -155,10 +155,7 @@ function addNode(data) {
 	// verifica se já existe um nó de mesmo peso e coordenadas no array
 	let encontrado = false;
 	for(let t in Tree){
-		// if(data.y == Tree[t].y && data.x == Tree[t].x && data.peso >= Tree[t].peso){
-		
-		// parece mais certo (sem a checagem de peso/custo)
-		if(data.y == Tree[t].y && data.x == Tree[t].x){
+		if(data.y == Tree[t].y && data.x == Tree[t].x && data.peso >= Tree[t].peso){
 			encontrado = true;
 		}
 	}
@@ -166,10 +163,6 @@ function addNode(data) {
 		if(data.value == 'C'){
 			setPesoC();
 			// console.log(data);
-		}
-		else if(data.value == 'D'){
-			// console.log(data);
-			setPesoD();
 		}
 
 	  	Tree.push(data);
@@ -215,11 +208,14 @@ function buscaGenerica(){
 	// ordena o array por pesos
 	Tree.sort(sortNumbers);
 
+	// console.log(Tree);
+
+
 	// enquanto não encontrar o fim executa a funcao novamente
 	if(Tree[0].value != 'F'){
 		setTimeout(function(){
 			buscaGenerica();
-		}, 2);
+		}, 1);
 	}
 	else{
 		// quando encontrou o fim faz o trajeto de volta
@@ -257,7 +253,6 @@ function mostraMatriz(){
 function reload(){
     Tree = [];
     visitedTree = [];
-    pesoD = 300;
 	ipesoC = 0;
     mostraMatriz();
     custoTrajeto = 0;
