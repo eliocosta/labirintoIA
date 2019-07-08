@@ -1,0 +1,244 @@
+<html>
+<head>
+	<title>Labirinto</title>
+<link href="style.css" media="all" rel="stylesheet" />
+<script type="text/javascript" src="matrix.js"></script>
+
+<script type="text/javascript">
+
+function setClass(yVal,xVal,classe){
+	let backgroundColor;
+	switch (classe) {
+		case 'visitou':
+			backgroundColor = "#efcac4"
+			break;
+		case 'verde':
+			backgroundColor = "#01ab54"
+			break;
+		default:
+			backgroundColor = 'red'
+			break;
+	}
+
+	document.getElementById('y'+yVal+'x'+xVal).style.backgroundColor = backgroundColor;
+}
+
+var Tree = [];
+var visitedTree = [];
+
+window.y = 36;
+window.x = 4;
+
+var flagBusca;
+var reloadCount = 0;
+
+var custoTrajeto = 0;
+
+function checkPeso(y,x,node){
+	return matriz[y][x]
+}
+
+function checkHeuristica(y,x){
+	// euclidiana
+	var d1 = (x - 36) * (x - 36);
+    var d2 = (y - 36) * (y - 36);
+    return Math.sqrt(d1 + d2);
+}
+
+function getVizinhos(y,x) {
+
+	if((x > 38 || y > 38) || x < 1 || y < 1){
+		return false;
+	}
+
+	var vizinhos = [{
+						y: y-1,
+						x: x
+					},
+					{
+						y: y+1,
+						x: x
+					},
+					{
+						y: y,
+						x: x-1
+					},
+					{
+						y: y,
+						x: x+1
+					}];
+
+	// adiciona no vetor visitedTree os nós que já tiveram seus filhos visitados
+	if(visitedTree.length > 0){
+		for(let vt in visitedTree){
+			for(let v in vizinhos){
+				if(vizinhos[v].y == visitedTree[vt].y && vizinhos[v].x == visitedTree[vt].x){
+					vizinhos.splice(v,1);
+				}
+			}
+		}
+	}
+	return vizinhos;
+}
+
+
+function Node(y,x,parent) {
+
+    this.y = y;
+    this.x = x;
+    this.value = matriz[y][x];
+    this.heuristica = checkHeuristica(y,x);
+	this.d = 1000/3;
+
+    	if(parent){
+    		this.d = parent.d;
+    	}
+    
+
+	if(parent){
+		this.peso = checkPeso(y,x,this) + parent.peso;
+	}
+	else{
+		this.peso = 0;
+	}
+
+    this.parent = parent;
+}
+
+function sortNumbers(a, b) {
+	if(flagBusca == 'astar'){
+		return (a.peso + a.heuristica) - (b.peso + b.heuristica);
+	}
+	else if (flagBusca == 'gulosa'){
+		return a.heuristica - b.heuristica;
+	}
+	else if (flagBusca == 'uniforme') {
+		return a.peso - b.peso;
+	}
+	else if (flagBusca == 'subida'){
+		return a.heuristica - b.heuristica;
+	}
+}
+
+function addNode(data) {
+
+	// verifica se já existe um nó de mesmo peso e coordenadas no array
+	let encontrado = false;
+	for(let t in Tree){
+		if(data.y == Tree[t].y && data.x == Tree[t].x && data.peso >= Tree[t].peso){
+			encontrado = true;
+		}
+	}
+	if(encontrado == false){
+		
+	  	Tree.push(data);
+		setClass(data.y,data.x,'visitou');
+	}
+}
+
+function trajeto(node){
+
+	setTimeout(function(){
+
+		setClass(node.y,node.x,'verde');
+
+		if(node.y != window.y || node.x != window.x){
+			custoTrajeto += node.peso;
+			return trajeto(node.parent);
+		}
+		else{
+			reloadCount = 1;
+			return;
+		}
+
+	}, 20);
+}
+
+function buscaGenerica(){
+
+	let yVal = Tree[0].y;
+	let xVal = Tree[0].x;
+
+	node = {y:yVal, x:xVal}
+	visitedTree.push(node);
+
+	var vizinhos = getVizinhos(yVal,xVal);
+	// adiciona os vizinhos no array
+	for (var v in vizinhos) {
+		addNode(new Node(vizinhos[v].y,vizinhos[v].x,Tree[0]));
+	}
+
+	// remove o primeiro elemento do array
+	Tree.splice(0,1);
+
+	// ordena o array por pesos
+	Tree.sort(sortNumbers);
+
+	// console.log(Tree);
+
+
+	// enquanto não encontrar o fim executa a funcao novamente
+	if(Tree[0].value != 100){
+		setTimeout(function(){
+			buscaGenerica();
+		}, 1);
+	}
+	else{
+		// quando encontrou o fim faz o trajeto de volta
+		trajeto(Tree[0]);
+
+		// console.log(Tree[0]);
+	}
+}
+
+function mostraMatriz(){
+	var html = '';
+	for (let y = 0; y < matriz.length; y++) {
+		for (let x = 0; x < matriz[y].length; x++) {
+			html += '<div id="y'+y+'x'+x+'" style="background-color:hsl(0, 100%, ' + matriz[y][x] + '%)">' + matriz[y][x] + '</div>';
+		}
+		html += '<br class="clear">';
+	}
+	document.getElementById("matriz").innerHTML = html;
+}
+
+//Função para recarregar a matriz quando clicar em algum botão
+//pela segunda vez. Esvazia a Tree[] e a visitedTree[]
+function reload(){
+    Tree = [];
+    visitedTree = [];
+    mostraMatriz();
+    custoTrajeto = 0;
+    console.log("TREE: ", Tree);
+}
+
+//Setta a flag, para diferenciar na escolha dos algoritmos
+//na função Node(y,x,parent)
+function buscaOpcao(flag){
+    console.log(flag);
+    flagBusca = flag;
+    if(reloadCount == 1){
+        reload();
+	}
+
+	// pra nao fazer uma busca pelo I, já defini o ponto de partida
+	// adicionando o primero nó no array
+	addNode(new Node(window.y,window.x,null));
+
+    buscaGenerica();
+}
+
+</script>
+</head>
+<body onLoad="mostraMatriz()">
+	
+	<div id="button">
+		<button onClick="buscaOpcao('uniforme')">Busca Uniforme</button>
+		<button onClick="buscaOpcao('gulosa')">Busca Gulosa</button>
+		<button onClick="buscaOpcao('astar')">Busca A Star</button>
+	</div>
+
+	<div id="matriz"></div>
+	
+</body>
+</html>
