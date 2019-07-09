@@ -6,28 +6,25 @@
 
 <script type="text/javascript">
 
-function setClass(yVal,xVal,classe){
+function setClass(yVal,xVal,classe = 'red'){
 	let backgroundColor;
 	switch (classe) {
 		case 'visitou':
-			backgroundColor = "#efcac4"
+			backgroundColor = "#faff66"
 			break;
 		case 'verde':
-			backgroundColor = "#01ab54"
+			backgroundColor = "#48db43"
 			break;
 		default:
-			backgroundColor = 'red'
+			backgroundColor = "#ff0000"
 			break;
 	}
-
 	document.getElementById('y'+yVal+'x'+xVal).style.backgroundColor = backgroundColor;
 }
 
 var Tree = [];
 var visitedTree = [];
-
-window.y = 36;
-window.x = 4;
+var interacoes = 0;
 
 var flagBusca;
 var reloadCount = 0;
@@ -78,6 +75,9 @@ function getVizinhos(y,x) {
 			}
 		}
 	}
+	
+	interacoes += vizinhos.length;
+	document.getElementById('boxInteracoes').innerHTML = 'Interacoes: ' + interacoes
 	return vizinhos;
 }
 
@@ -110,13 +110,10 @@ function sortNumbers(a, b) {
 		return (a.peso + a.heuristica) - (b.peso + b.heuristica);
 	}
 	else if (flagBusca == 'gulosa'){
-		return a.heuristica - b.heuristica;
+		return a.heuristica + b.heuristica;
 	}
 	else if (flagBusca == 'uniforme') {
 		return a.peso - b.peso;
-	}
-	else if (flagBusca == 'subida'){
-		return a.heuristica - b.heuristica;
 	}
 }
 
@@ -130,7 +127,7 @@ function addNode(data) {
 		}
 	}
 	if(encontrado == false){
-		
+
 	  	Tree.push(data);
 		setClass(data.y,data.x,'visitou');
 	}
@@ -159,7 +156,7 @@ function buscaGenerica(){
 	let yVal = Tree[0].y;
 	let xVal = Tree[0].x;
 
-	node = {y:yVal, x:xVal}
+	const node = {y:yVal, x:xVal}
 	visitedTree.push(node);
 
 	var vizinhos = getVizinhos(yVal,xVal);
@@ -195,30 +192,41 @@ function mostraMatriz(){
 	var html = '';
 	for (let y = 0; y < matriz.length; y++) {
 		for (let x = 0; x < matriz[y].length; x++) {
-			html += '<div id="y'+y+'x'+x+'" style="background-color:hsl(0, 100%, ' + matriz[y][x] + '%)">' + matriz[y][x] + '</div>';
+			html += '<div id="y'+y+'x'+x+'" style="background-color:hsl(191, 100%, ' + matriz[y][x] + '%)">' + matriz[y][x] + '</div>';
 		}
 		html += '<br class="clear">';
 	}
 	document.getElementById("matriz").innerHTML = html;
+	setTimeout(() => {
+		setClass(window.y,window.x,'red')
+	}, 100);
 }
 
 //Função para recarregar a matriz quando clicar em algum botão
 //pela segunda vez. Esvazia a Tree[] e a visitedTree[]
 function reload(){
+	interacoes = 0;
     Tree = [];
     visitedTree = [];
-    mostraMatriz();
+	mostraMatriz();
     custoTrajeto = 0;
-    console.log("TREE: ", Tree);
+}
+
+function novoPontoAleatorio() {
+	window.y = Math.floor((Math.random() * 38) + 1);
+	window.x = Math.floor((Math.random() * 38) + 1);
+	reload()
 }
 
 //Setta a flag, para diferenciar na escolha dos algoritmos
 //na função Node(y,x,parent)
 function buscaOpcao(flag){
-    console.log(flag);
+
     flagBusca = flag;
-    if(reloadCount == 1){
-        reload();
+	reload();
+
+	if (flag == 'subida') {
+		return startSubidaEncosta(window.y,window.x)
 	}
 
 	// pra nao fazer uma busca pelo I, já defini o ponto de partida
@@ -228,14 +236,49 @@ function buscaOpcao(flag){
     buscaGenerica();
 }
 
+function startSubidaEncosta(nY,nX){
+
+	setClass(nY,nX,'verde');
+
+	const atual = matriz[nY][nX]
+	let vizinhos = getVizinhos(nY,nX);
+	let values = []
+	vizinhos.forEach(node => {
+
+		setClass(node.y,node.x,'visitou');
+		const newNode = {
+			value: matriz[node.y][node.x],
+			x: node.x,
+			y: node.y
+		}
+		visitedTree.push(newNode);
+		values.push(newNode);
+	});
+	
+	values.sort((a, b) => {
+		return b.value - a.value;
+	});
+	const [maior] = values
+	const maiorVizinho = matriz[maior.y][maior.x]
+
+	if(maiorVizinho !== 100 && maiorVizinho > atual){
+		setTimeout(function(){	
+			startSubidaEncosta(maior.y,maior.x);
+		}, 20)
+	}
+}
+
 </script>
 </head>
-<body onLoad="mostraMatriz()">
+<body onLoad="novoPontoAleatorio()">
 	
 	<div id="button">
+		<button onClick="buscaOpcao('subida')">Subida da encosta</button>
 		<button onClick="buscaOpcao('uniforme')">Busca Uniforme</button>
 		<button onClick="buscaOpcao('gulosa')">Busca Gulosa</button>
 		<button onClick="buscaOpcao('astar')">Busca A Star</button>
+		<button onClick="novoPontoAleatorio()">Novo ponto aleatório</button>
+		<div id="boxInteracoes"></div>
 	</div>
 
 	<div id="matriz"></div>
