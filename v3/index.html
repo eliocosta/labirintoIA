@@ -148,7 +148,7 @@ function trajeto(node){
 			return;
 		}
 
-	}, 20);
+	}, 1);
 }
 
 function buscaGenerica(){
@@ -176,9 +176,9 @@ function buscaGenerica(){
 
 	// enquanto não encontrar o fim executa a funcao novamente
 	if(Tree[0].value != 100){
-		setTimeout(function(){
+		// setTimeout(function(){
 			buscaGenerica();
-		}, 1);
+		// }, 1);
 	}
 	else{
 		// quando encontrou o fim faz o trajeto de volta
@@ -199,7 +199,7 @@ function mostraMatriz(){
 	document.getElementById("matriz").innerHTML = html;
 	setTimeout(() => {
 		setClass(window.y,window.x,'red')
-	}, 100);
+	}, 1);
 }
 
 //Função para recarregar a matriz quando clicar em algum botão
@@ -215,6 +215,7 @@ function reload(){
 function novoPontoAleatorio() {
 	window.y = Math.floor((Math.random() * 38) + 1);
 	window.x = Math.floor((Math.random() * 38) + 1);
+	document.getElementById('boxCoordenadas').innerHTML = 'Start <br> x: ' + window.x + '<br>y: ' + window.y + '<br>'
 	reload()
 }
 
@@ -261,10 +262,12 @@ function startSubidaEncosta(nY,nX){
 	const [maior] = values
 	const maiorVizinho = matriz[maior.y][maior.x]
 
+	document.getElementById('boxSolucao').innerHTML = 'Solução <br> x: ' + maior.x + '<br>y: ' + maior.y + '<br>'	
+	
 	if(maiorVizinho !== 100 && maiorVizinho > atual){
 		setTimeout(function(){	
 			startSubidaEncosta(maior.y,maior.x);
-		}, 20)
+		}, 1)
 	}
 }
 
@@ -279,6 +282,9 @@ function startSubidaEncosta(nY,nX){
 		<button onClick="buscaOpcao('astar')">Busca A Star</button>
 		<button onClick="novoPontoAleatorio()">Novo ponto aleatório</button>
 		<div id="boxInteracoes"></div>
+		<div id="boxCoordenadas"></div>
+		<div id="boxSolucao"></div>
+		<br clear="both" />
 	</div>
 
 	<div id="matriz"></div>

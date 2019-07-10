@@ -37,3 +37,12 @@ button{
 	clear: left;
 	display: inline-block;
 }
+#boxCoordenadas {
+	float: left;
+	padding: 10px;
+	margin-left: 100px
+} 
+#boxSolucao {
+	float: left;
+	padding: 10px;
+}
