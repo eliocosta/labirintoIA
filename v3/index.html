@@ -33,14 +33,14 @@ var custoTrajeto = 0;
 
 function checkHeuristica(y,x){
 	// euclidiana
-	var d1 = (x - 36) * (x - 36);
-    var d2 = (y - 36) * (y - 36);
+	var d1 = (x - 26) * (x - 26);
+    var d2 = (y - 26) * (y - 26);
     return Math.sqrt(d1 + d2);
 }
 
 function getVizinhos(y,x) {
 
-	if((x > 38 || y > 38) || x < 1 || y < 1){
+	if((x > 28 || y > 28) || x < 1 || y < 1){
 		return false;
 	}
 
@@ -202,8 +202,8 @@ function reload(){
 }
 
 function novoPontoAleatorio() {
-	window.y = Math.floor((Math.random() * 38) + 1);
-	window.x = Math.floor((Math.random() * 38) + 1);
+	window.y = Math.floor((Math.random() * 28) + 1);
+	window.x = Math.floor((Math.random() * 28) + 1);
 	document.getElementById('boxCoordenadas').innerHTML = 'Start <br> x: ' + window.x + '<br>y: ' + window.y + '<br>'
 	reload()
 }
@@ -232,10 +232,14 @@ function startSubidaEncosta(nY,nX){
 
 	const atual = matriz[nY][nX]
 	let vizinhos = getVizinhos(nY,nX);
-	let values = []
+	let values = [];
+	
 	vizinhos.forEach(node => {
 
 		setClass(node.y,node.x,'visitou');
+		interacoes++;
+		document.getElementById('boxInteracoes').innerHTML = 'Interacoes: ' + interacoes
+	
 		const newNode = {
 			value: matriz[node.y][node.x],
 			x: node.x,
