@@ -31,10 +31,6 @@ var reloadCount = 0;
 
 var custoTrajeto = 0;
 
-function checkPeso(y,x,node){
-	return matriz[y][x]
-}
-
 function checkHeuristica(y,x){
 	// euclidiana
 	var d1 = (x - 36) * (x - 36);
@@ -75,9 +71,6 @@ function getVizinhos(y,x) {
 			}
 		}
 	}
-	
-	interacoes += vizinhos.length;
-	document.getElementById('boxInteracoes').innerHTML = 'Interacoes: ' + interacoes
 	return vizinhos;
 }
 
@@ -88,15 +81,9 @@ function Node(y,x,parent) {
     this.x = x;
     this.value = matriz[y][x];
     this.heuristica = checkHeuristica(y,x);
-	this.d = 1000/3;
-
-    	if(parent){
-    		this.d = parent.d;
-    	}
-    
 
 	if(parent){
-		this.peso = checkPeso(y,x,this) + parent.peso;
+		this.peso = matriz[y][x] + parent.peso;
 	}
 	else{
 		this.peso = 0;
@@ -144,6 +131,8 @@ function trajeto(node){
 			return trajeto(node.parent);
 		}
 		else{
+			document.getElementById('boxInteracoes').innerHTML = 'Interacoes: ' + visitedTree.length
+			
 			reloadCount = 1;
 			return;
 		}
@@ -176,9 +165,9 @@ function buscaGenerica(){
 
 	// enquanto não encontrar o fim executa a funcao novamente
 	if(Tree[0].value != 100){
-		// setTimeout(function(){
+		setTimeout(function(){
 			buscaGenerica();
-		// }, 1);
+		}, 5);
 	}
 	else{
 		// quando encontrou o fim faz o trajeto de volta
